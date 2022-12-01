@@ -2,12 +2,15 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.List;
 
 public class AocChallenge {
     public List<String> getLinesForPart1() {
         return getResource(String.format("day%d-1.txt", getDay()));
+    }
+
+    public String getPart1AsString() {
+        return String.join("\n", getLinesForPart1());
     }
 
     public List<String> getLinesForPart2() {
