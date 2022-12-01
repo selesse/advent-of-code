@@ -1,4 +1,5 @@
 import java.util.Arrays;
+import java.util.Collections;
 
 public class Day1 extends AocChallenge {
     public void run() {
@@ -6,6 +7,9 @@ public class Day1 extends AocChallenge {
 
         System.out.println("Part 1");
         System.out.println("Max calories: " + maxCalories);
+
+        System.out.println("Part 2");
+        System.out.println("Top 3 calories counted: " + part2Solution());
     }
 
     public int part1Solution() {
@@ -15,6 +19,17 @@ public class Day1 extends AocChallenge {
                 .map(x -> sumOfArrayOfStringNumbers(x.split("\n")))
                 .max(Integer::compareTo)
                 .orElseThrow();
+    }
+
+    public int part2Solution() {
+        var input = getPart1AsString();
+        var sequences = input.split("\n\n");
+        var topThreeElves = Arrays.stream(sequences)
+                .map(x -> sumOfArrayOfStringNumbers(x.split("\n")))
+                .sorted(Collections.reverseOrder())
+                .limit(3)
+                .toList();
+        return topThreeElves.stream().reduce(0, Integer::sum);
     }
 
     private static Integer sumOfArrayOfStringNumbers(String[] numbers) {
