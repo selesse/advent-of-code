@@ -4,7 +4,9 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
 
-public class AocChallenge {
+public abstract class AocChallenge {
+    abstract void run();
+
     public List<String> getLinesForPart1() {
         return getResource(String.format("day%d-1.txt", getDay()));
     }

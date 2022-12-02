@@ -2,6 +2,7 @@ import java.util.Arrays;
 import java.util.Collections;
 
 public class Day1 extends AocChallenge {
+    @Override
     public void run() {
         int maxCalories = part1Solution();
 
