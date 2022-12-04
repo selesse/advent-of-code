@@ -8,4 +8,10 @@ public class Day4Test {
         Day4 day4 = new Day4();
         assertThat(day4.part1()).isEqualTo(2);
     }
+
+    @Test
+    public void canReturnSolutionForPart2() {
+        Day4 day4 = new Day4();
+        assertThat(day4.part2()).isEqualTo(4);
+    }
 }
