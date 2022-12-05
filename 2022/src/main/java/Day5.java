@@ -38,6 +38,7 @@ public class Day5 extends AocChallenge {
     }
 
     private static final Pattern instructionPattern = Pattern.compile("move (\\d+) from (\\d+) to (\\d+)");
+
     private List<Instruction> toListOfInstructions(String moves) {
         return Arrays.stream(moves.split("\n"))
                 .map(instructionLine -> {
@@ -63,7 +64,7 @@ public class Day5 extends AocChallenge {
         stacks.forEach(stack -> listOfStacks.add(new BoxStack(stack, new Stack<>())));
 
         stackContents.forEach(stackLine -> {
-            var spaces =Arrays.stream(stackLine.split("    ")).collect(Collectors.joining(" ")).split(" ");
+            var spaces = String.join(" ", stackLine.split("    ")).split(" ");
             for (int i = 0; i < spaces.length; i++) {
                 String space = spaces[i].replace("[", "").replace("]", "");
                 if (!space.isEmpty()) {
@@ -106,6 +107,9 @@ public class Day5 extends AocChallenge {
         });
     }
 
-    public record BoxStack(String name, Stack<String> boxes) {}
-    public record Instruction(int amount, int from, int to) {}
+    public record BoxStack(String name, Stack<String> boxes) {
+    }
+
+    public record Instruction(int amount, int from, int to) {
+    }
 }
