@@ -5,7 +5,7 @@ import java.util.stream.Collectors;
 
 public class Day5 extends AocChallenge {
     @Override
-    void run() {
+    public void run() {
         System.out.println("Part 1:");
         System.out.println("Top crates: " + part1());
     }
@@ -22,7 +22,7 @@ public class Day5 extends AocChallenge {
         return stacks.stream().map(stack -> stack.boxes().peek()).collect(Collectors.joining(""));
     }
 
-    private static final Pattern instructionPattern = Pattern.compile("move (\\d) from (\\d) to (\\d)");
+    private static final Pattern instructionPattern = Pattern.compile("move (\\d+) from (\\d+) to (\\d+)");
     private List<Instruction> toListOfInstructions(String moves) {
         return Arrays.stream(moves.split("\n"))
                 .map(instructionLine -> {
@@ -48,10 +48,10 @@ public class Day5 extends AocChallenge {
         stacks.forEach(stack -> listOfStacks.add(new BoxStack(stack, new Stack<>())));
 
         stackContents.forEach(stackLine -> {
-            var spaces = stackLine.replace("    ", "EMPTY\t").split("[\t ]");
+            var spaces =Arrays.stream(stackLine.split("    ")).collect(Collectors.joining(" ")).split(" ");
             for (int i = 0; i < spaces.length; i++) {
                 String space = spaces[i].replace("[", "").replace("]", "");
-                if (!space.equals("EMPTY") && !space.isEmpty()) {
+                if (!space.isEmpty()) {
                     BoxStack boxStack = listOfStacks.get(i);
                     boxStack.boxes.push(space);
                 }
