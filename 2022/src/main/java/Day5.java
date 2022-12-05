@@ -8,6 +8,9 @@ public class Day5 extends AocChallenge {
     public void run() {
         System.out.println("Part 1:");
         System.out.println("Top crates: " + part1());
+
+        System.out.println("Part 2:");
+        System.out.println("Top crates: " + part2());
     }
 
     public String part1() {
@@ -19,6 +22,18 @@ public class Day5 extends AocChallenge {
         var instructions = toListOfInstructions(moves);
 
         moveBoxes(stacks, instructions);
+        return stacks.stream().map(stack -> stack.boxes().peek()).collect(Collectors.joining(""));
+    }
+
+    public String part2() {
+        var parts = getPart1AsString().split("\n\n");
+        var startingState = parts[0];
+        var moves = parts[1];
+
+        var stacks = toListOfStacks(startingState);
+        var instructions = toListOfInstructions(moves);
+
+        moveBoxesPart2(stacks, instructions);
         return stacks.stream().map(stack -> stack.boxes().peek()).collect(Collectors.joining(""));
     }
 
@@ -80,6 +95,16 @@ public class Day5 extends AocChallenge {
         });
     }
 
+    private void moveBoxesPart2(List<BoxStack> stacks, List<Instruction> instructions) {
+        instructions.forEach(instruction -> {
+            BoxStack fromBox = stacks.get(instruction.from - 1);
+            BoxStack toBox = stacks.get(instruction.to - 1);
+            for (int i = instruction.amount; i > 0; i--) {
+                String element = fromBox.boxes().remove(fromBox.boxes().size() - i);
+                toBox.boxes().push(element);
+            }
+        });
+    }
 
     public record BoxStack(String name, Stack<String> boxes) {}
     public record Instruction(int amount, int from, int to) {}

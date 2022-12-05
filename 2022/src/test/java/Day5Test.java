@@ -8,4 +8,10 @@ public class Day5Test {
         Day5 day5 = new Day5();
         assertThat(day5.part1()).isEqualTo("CMZ");
     }
+
+    @Test
+    public void canReturnSolutionForPart2() {
+        Day5 day5 = new Day5();
+        assertThat(day5.part2()).isEqualTo("MCD");
+    }
 }
