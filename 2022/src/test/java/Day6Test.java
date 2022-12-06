@@ -10,7 +10,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class Day6Test {
     private final TestCondition testCondition;
 
-    public record TestCondition(String inputString, int charactersUntilStartOfPacket) {
+    public record TestCondition(String inputString, int charactersUntilStartOfPacketPart1,
+                                int charactersUntilStartOfPacketPart2) {
     }
 
     public Day6Test(TestCondition testCondition) {
@@ -20,20 +21,28 @@ public class Day6Test {
     @Parameterized.Parameters
     public static List<TestCondition> testConditions() {
         return List.of(
-                new TestCondition("mjqjpqmgbljsphdztnvjfqwrcgsmlb", 7),
-                new TestCondition("bvwbjplbgvbhsrlpgdmjqwftvncz", 5),
-                new TestCondition("nppdvjthqldpwncqszvftbrmjlhg", 6),
-                new TestCondition("nznrnfrfntjfmvfwmzdfjlvtqnbhcprsg", 10),
-                new TestCondition("zcfzfwzzqfrljwzlrfnpqdbhtmscgvjw", 11)
+                new TestCondition("mjqjpqmgbljsphdztnvjfqwrcgsmlb", 7, 19),
+                new TestCondition("bvwbjplbgvbhsrlpgdmjqwftvncz", 5, 23),
+                new TestCondition("nppdvjthqldpwncqszvftbrmjlhg", 6, 23),
+                new TestCondition("nznrnfrfntjfmvfwmzdfjlvtqnbhcprsg", 10, 29),
+                new TestCondition("zcfzfwzzqfrljwzlrfnpqdbhtmscgvjw", 11, 26)
         );
     }
 
 
     @Test
-    public void canReturnCharactersGivenInput() {
+    public void canReturnCharactersGivenInputPart1() {
         Day6 day6 = new Day6();
         assertThat(
-                day6.charactersUntilStartOfPacket(testCondition.inputString)
-        ).isEqualTo(testCondition.charactersUntilStartOfPacket);
+                day6.charactersUntilStartOfPacket(testCondition.inputString, 4)
+        ).isEqualTo(testCondition.charactersUntilStartOfPacketPart1);
+    }
+
+    @Test
+    public void canReturnCharactersGivenInputPart2() {
+        Day6 day6 = new Day6();
+        assertThat(
+                day6.charactersUntilStartOfPacket(testCondition.inputString, 14)
+        ).isEqualTo(testCondition.charactersUntilStartOfPacketPart2);
     }
 }

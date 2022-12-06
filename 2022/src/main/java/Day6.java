@@ -6,22 +6,31 @@ public class Day6 extends AocChallenge {
     public void run() {
         System.out.println("Part 1");
         System.out.println(part1());
+
+        System.out.println("Part 2");
+        System.out.println(part2());
     }
 
     public String part1() {
         var input = getPart1AsString();
 
-        return "" + charactersUntilStartOfPacket(input);
+        return "" + charactersUntilStartOfPacket(input, 4);
     }
 
-    public int charactersUntilStartOfPacket(String buffer) {
+    public String part2() {
+        var input = getPart1AsString();
+
+        return "" + charactersUntilStartOfPacket(input, 14);
+    }
+
+    public int charactersUntilStartOfPacket(String buffer, int chunkSize) {
         for (int i = 0; i < buffer.length(); i++) {
-            if (i + 4 < buffer.length()) {
-                var chunk = buffer.substring(i, i + 4);
+            if (i + chunkSize < buffer.length()) {
+                var chunk = buffer.substring(i, i + chunkSize);
                 boolean allCharactersAreDifferent =
-                        chunk.chars().mapToObj(x -> (char) x).collect(Collectors.toCollection(LinkedHashSet::new)).size() == 4;
+                        chunk.chars().mapToObj(x -> (char) x).collect(Collectors.toCollection(LinkedHashSet::new)).size() == chunkSize;
                 if (allCharactersAreDifferent) {
-                    return i + 4;
+                    return i + chunkSize;
                 }
             }
         }
