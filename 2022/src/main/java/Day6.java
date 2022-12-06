@@ -28,12 +28,16 @@ public class Day6 extends AocChallenge {
             if (i + chunkSize < buffer.length()) {
                 var chunk = buffer.substring(i, i + chunkSize);
                 boolean allCharactersAreDifferent =
-                        chunk.chars().mapToObj(x -> (char) x).collect(Collectors.toCollection(LinkedHashSet::new)).size() == chunkSize;
+                        toLinkedHashSet(chunk).size() == chunkSize;
                 if (allCharactersAreDifferent) {
                     return i + chunkSize;
                 }
             }
         }
         throw new IllegalArgumentException();
+    }
+
+    private static LinkedHashSet<Character> toLinkedHashSet(String chunk) {
+        return chunk.chars().mapToObj(x -> (char) x).collect(Collectors.toCollection(LinkedHashSet::new));
     }
 }
