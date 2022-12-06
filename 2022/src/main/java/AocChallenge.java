@@ -7,6 +7,11 @@ import java.util.List;
 public abstract class AocChallenge {
     public abstract void run();
 
+    public void printSolution() {
+        System.out.println("===== Day " + getDay() + " ======");
+        run();
+    }
+
     public List<String> getLinesForPart1() {
         return getResource(String.format("day%d-1.txt", getDay()));
     }
