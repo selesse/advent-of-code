@@ -3,7 +3,7 @@ import java.util.Map;
 
 public class Day3 extends AocChallenge {
     @Override
-    void run() {
+    public void run() {
         System.out.println("Part 1");
         System.out.println(part1());
 

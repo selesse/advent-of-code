@@ -82,7 +82,7 @@ public class Day2 extends AocChallenge {
 
 
     @Override
-    void run() {
+    public void run() {
         System.out.println("Score for part 1");
         System.out.println(part1());
 

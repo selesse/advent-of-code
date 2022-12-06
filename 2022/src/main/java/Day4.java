@@ -4,7 +4,7 @@ import java.util.stream.IntStream;
 
 public class Day4 extends AocChallenge {
     @Override
-    void run() {
+    public void run() {
         System.out.println("Part 1:");
         System.out.println("Number of assignment pairs: " + part1());
 
