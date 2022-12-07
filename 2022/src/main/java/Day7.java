@@ -7,6 +7,9 @@ public class Day7 extends AocChallenge {
     public void run() {
         System.out.println("Part 1");
         System.out.println(part1());
+
+        System.out.println("Part 2");
+        System.out.println(part2());
     }
 
     public int part1() {
@@ -23,6 +26,28 @@ public class Day7 extends AocChallenge {
                 .map(Directory::size)
                 .filter(x -> x <= 100e3)
                 .reduce(0, Integer::sum);
+    }
+
+    public int part2() {
+        var lines = getLinesForPart1();
+        var sequences = getSequenceFromInput(lines);
+
+        var rootDirectory = buildFilesystem(sequences);
+        var directories = getDirectories(rootDirectory);
+        var allDirectories = new ArrayList<Directory>();
+        allDirectories.add(rootDirectory);
+        allDirectories.addAll(directories);
+
+        var fileSystemSize = 70000000;
+        var currentSize = rootDirectory.size();
+        int unusedSpace = fileSystemSize - currentSize;
+        int deletionRequired = 30000000 - unusedSpace;
+
+        return allDirectories.stream()
+                .map(Directory::size)
+                .filter(x -> x >= deletionRequired)
+                .sorted()
+                .findFirst().orElseThrow();
     }
 
     public List<Directory> getDirectories(Directory directory) {
@@ -127,7 +152,6 @@ public class Day7 extends AocChallenge {
 
         return instructions;
     }
-
 
     public interface Sequence {}
 
