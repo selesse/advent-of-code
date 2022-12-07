@@ -63,17 +63,18 @@ public class Day7 extends AocChallenge {
         }
 
         var rootNode = (Directory) nodes.get(0);
-        // Every non-root node is a directory whose contents we know, add them to the root directory
-        for (int i = 1; i < nodes.size(); i++) {
-            var node = (Directory) nodes.get(i);
-            String path = node.getPath();
-            var parts = List.of(path.split("/"));
-            var nodeToReplace = (Directory) rootNode;
-            if (parts.size() > 2) {
-                var parent = String.join("/", parts.subList(0, parts.size() - 1));
-                nodeToReplace = (Directory) rootNode.getNode(parent);
+        List<Directory> directories = new ArrayList<>();
+        for (Node node : nodes) {
+            var directory = ((Directory) node);
+            directories.add(directory);
+        }
+        for (Directory directory : directories) {
+            if (directory.path.equals("/")) {
+                continue;
             }
-            nodeToReplace.add(node);
+            Directory newDirectory =
+                    directories.stream().filter(x -> x.path.equals(directory.path)).findFirst().orElseThrow();
+            rootNode.add(newDirectory);
         }
         return rootNode;
     }
@@ -133,7 +134,7 @@ public class Day7 extends AocChallenge {
     public record ChangeDirectoryInstruction(String desiredDirectory) implements Sequence {}
     public record ListDirectoryContents(List<String> output) implements Sequence {}
 
-    public class Leaf extends Node {
+    public static class Leaf extends Node {
         private final int size;
         private final String name;
 
@@ -150,7 +151,7 @@ public class Day7 extends AocChallenge {
     public abstract static class Node {
         abstract int size();
     }
-    public class Directory extends Node {
+    public static class Directory extends Node {
         private final String path;
         private List<Node> nodes;
 
@@ -179,10 +180,13 @@ public class Day7 extends AocChallenge {
                     if (name.equals(desiredPath)) {
                         return node;
                     }
-                    return ((Directory) node).getNode(desiredPath);
+                    Node node1 = ((Directory) node).getNode(desiredPath);
+                    if (node1 != null) {
+                        return node1;
+                    }
                 }
             }
-            throw new IllegalArgumentException();
+            return null;
         }
 
         @Override
@@ -191,9 +195,20 @@ public class Day7 extends AocChallenge {
         }
 
         public void add(Directory node) {
-            var newList = new ArrayList<>(nodes);
-            newList.add(node);
-            this.nodes = newList;
+            var parts = List.of(node.path.split("/"));
+            String parentPath = String.join("/", parts.subList(0, parts.size() - 1));
+            if (parentPath.isBlank()) {
+                parentPath = "/";
+            }
+            if (parentPath.equals(this.path)) {
+                var newList = new ArrayList<>(nodes);
+                newList.add(node);
+                this.nodes = newList;
+            }
+            else {
+                Directory parent = (Directory) getNode(parentPath);
+                parent.add(node);
+            }
         }
     }
 
