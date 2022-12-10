@@ -7,14 +7,57 @@ public class Day9 extends AocChallenge {
     public void run() {
         System.out.println("Part 1");
         System.out.println(part1());
+
+        System.out.println("Part 2");
+        System.out.println(part2(getMoves(getInstructions(getLinesForPart1()))));
     }
 
     public int part1() {
-        var instructions = getInstructionsFromInput();
+        var instructions = getInstructions(getLinesForPart1());
+        List<Coordinate> tailMoves = getMoves(instructions).tailMoves();
+        return (int) tailMoves.stream().distinct().count();
+    }
+
+    public int part2(Moves moves) {
+        var headMoves = moves.headMoves();
+        var tailFollowers = new Followers(9);
+        for (Coordinate headMove : headMoves) {
+            tailFollowers.slitherTowards(headMove);
+        }
+
+        return tailFollowers.visits.get(8).stream().distinct().toList().size();
+    }
+
+    private static class Followers {
+        private final List<Coordinate> followers;
+        private final List<List<Coordinate>> visits;
+
+        public Followers(int capacity) {
+            followers = new ArrayList<>(capacity);
+            visits = new ArrayList<>(capacity);
+            for (int i = 0; i < capacity; i++) {
+                followers.add(new Coordinate(0, 0));
+                List<Coordinate> visits = new ArrayList<>();
+                this.visits.add(visits);
+            }
+        }
+
+        public void slitherTowards(Coordinate headMove) {
+            var currentHead = headMove;
+            for (int i = 0; i < followers.size(); i++) {
+                Coordinate moveToMake = followers.get(i).follow(currentHead);
+                followers.set(i, moveToMake);
+                visits.get(i).add(moveToMake);
+                currentHead = moveToMake;
+            }
+        }
+    }
+
+    Moves getMoves(List<Instruction> instructions) {
         var tailMoves = new ArrayList<Coordinate>();
+        var headMoves = new ArrayList<Coordinate>();
 
         var initialCoordinate = new Coordinate(0, 0);
-        tailMoves.add(initialCoordinate);
 
         var currentCoordinate = initialCoordinate;
         var currentTailCoordinate = initialCoordinate;
@@ -27,17 +70,20 @@ public class Day9 extends AocChallenge {
                 case SOUTH -> new Coordinate(currentCoordinate.x, currentCoordinate.y - instruction.numberOfSteps);
                 default -> throw new IllegalStateException("Unexpected value: " + instruction.direction);
             };
-            var tailCatchupMoves = computeTailMoves(currentCoordinate, newCoordinate, currentTailCoordinate);
-            currentCoordinate = newCoordinate;
+            var currentHeadMoves = computeHeadMoves(currentCoordinate, newCoordinate);
+            var tailCatchupMoves = computeTailMoves(currentHeadMoves, currentTailCoordinate);
+
+            headMoves.addAll(currentHeadMoves);
             tailMoves.addAll(tailCatchupMoves);
+
+            currentCoordinate = newCoordinate;
             currentTailCoordinate = tailCatchupMoves.get(tailCatchupMoves.size() - 1);
-            tailMoves.add(currentTailCoordinate);
         }
-        return (int) tailMoves.stream().distinct().count();
+        return new Moves(headMoves, tailMoves);
     }
 
-    private List<Instruction> getInstructionsFromInput() {
-        return getLinesForPart1().stream()
+    List<Instruction> getInstructions(List<String> lines) {
+        return lines.stream()
                 .map(line -> {
                     var directionAndAmount = line.split(" ");
                     var direction = Direction.fromString(directionAndAmount[0]);
@@ -46,49 +92,14 @@ public class Day9 extends AocChallenge {
                 }).toList();
     }
 
-    private List<Coordinate> computeTailMoves(
-            Coordinate currentCoordinate,
-            Coordinate newCoordinate,
-            Coordinate currentTailCoordinate
-    ) {
-        List<Coordinate> headMoves = computeHeadMoves(currentCoordinate, newCoordinate);
+    private List<Coordinate> computeTailMoves(List<Coordinate> headMoves, Coordinate currentTailCoordinate) {
         List<Coordinate> tailMoves = new ArrayList<>();
 
-        for (Coordinate headCoordinate : headMoves) {
-            currentTailCoordinate = moveTailCloserToHead(currentTailCoordinate, headCoordinate);
+        for (Coordinate head : headMoves) {
+            currentTailCoordinate = currentTailCoordinate.follow(head);
             tailMoves.add(currentTailCoordinate);
         }
         return tailMoves;
-    }
-
-    Coordinate moveTailCloserToHead(Coordinate tail, Coordinate head) {
-        if (tail.isOneAway(head)) {
-            return tail;
-        }
-        boolean left = head.x > tail.x;
-        boolean up = head.y > tail.y;
-        boolean down = head.y < tail.y;
-        boolean right = head.x < tail.x;
-        boolean isDiagonal = (up && left) || (up && right) || (down && left) || (down && right);
-        var vectorDifference = new Coordinate(head.x - tail.x, head.y - tail.y);
-        if (isDiagonal) {
-            boolean closerHorizontally = Math.abs(head.x - tail.x) < Math.abs(head.y - tail.y);
-            if (closerHorizontally) {
-                return new Coordinate(tail.x + vectorDifference.x, tail.y + vectorDifference.y + (up ? -1 : 1));
-            } else {
-                return new Coordinate(tail.x + vectorDifference.x + (left ? -1 : 1), tail.y + vectorDifference.y);
-            }
-        }
-        if (left) {
-            return new Coordinate(tail.x + vectorDifference.x - 1, tail.y);
-        } else if (right) {
-            return new Coordinate(tail.x + vectorDifference.x + 1, tail.y);
-        } else if (up) {
-            return new Coordinate(tail.x, tail.y + vectorDifference.y - 1);
-        } else if (down) {
-            return new Coordinate(tail.x, tail.y + vectorDifference.y + 1);
-        }
-        throw new IllegalArgumentException();
     }
 
     private List<Coordinate> computeHeadMoves(Coordinate currentCoordinate, Coordinate newCoordinate) {
@@ -147,9 +158,33 @@ public class Day9 extends AocChallenge {
         }
     }
 
+    public record Moves(List<Coordinate> headMoves, List<Coordinate> tailMoves) {
+    }
+
     public record Coordinate(int x, int y) {
         public boolean isOneAway(Coordinate otherCoordinate) {
             return Math.abs(x - otherCoordinate.x) <= 1 && Math.abs(y - otherCoordinate.y) <= 1;
         }
+
+        public Coordinate follow(Coordinate head) {
+            if (isOneAway(head)) {
+                return this;
+            }
+            var diff = new Coordinate(head.x - x, head.y - y);
+            if (diff.x < -1) {
+                diff = new Coordinate(-1, diff.y);
+            }
+            if (diff.x > 1) {
+                diff = new Coordinate(1, diff.y);
+            }
+            if (diff.y > 1) {
+                diff = new Coordinate(diff.x, 1);
+            }
+            if (diff.y < -1) {
+                diff = new Coordinate(diff.x, -1);
+            }
+            return new Coordinate(x + diff.x, y + diff.y);
+        }
+
     }
 }

@@ -17,11 +17,24 @@ public class Day9Test {
     }
 
     @Test
+    public void canReturnSolutionForPart2() {
+        assertThat(day9.part2(day9.getMoves(day9.getInstructions(day9.getLinesForPart2())))).isEqualTo(36);
+    }
+
+    @Test
+    public void nonsense() {
+        var tail = new Day9.Coordinate(1, 1);
+        var head = new Day9.Coordinate(2, 3);
+
+        assertThat(tail.follow(head)).isEqualTo(new Day9.Coordinate(2, 2));
+    }
+
+    @Test
     public void canMoveRight() {
         Day9.Coordinate tailCoordinate = new Day9.Coordinate(4, 4);
         Day9.Coordinate headCoordinate = new Day9.Coordinate(6, 4);
 
-        assertThat(day9.moveTailCloserToHead(tailCoordinate, headCoordinate))
+        assertThat(tailCoordinate.follow(headCoordinate))
                 .isEqualTo(new Day9.Coordinate(5, 4));
     }
 
@@ -30,7 +43,7 @@ public class Day9Test {
         Day9.Coordinate tailCoordinate = new Day9.Coordinate(4, 4);
         Day9.Coordinate headCoordinate = new Day9.Coordinate(2, 4);
 
-        assertThat(day9.moveTailCloserToHead(tailCoordinate, headCoordinate))
+        assertThat(tailCoordinate.follow(headCoordinate))
                 .isEqualTo(new Day9.Coordinate(3, 4));
     }
 
@@ -39,7 +52,7 @@ public class Day9Test {
         Day9.Coordinate tailCoordinate = new Day9.Coordinate(4, 4);
         Day9.Coordinate headCoordinate = new Day9.Coordinate(4, 6);
 
-        assertThat(day9.moveTailCloserToHead(tailCoordinate, headCoordinate))
+        assertThat(tailCoordinate.follow(headCoordinate))
                 .isEqualTo(new Day9.Coordinate(4, 5));
     }
 
@@ -48,7 +61,7 @@ public class Day9Test {
         Day9.Coordinate tailCoordinate = new Day9.Coordinate(4, 4);
         Day9.Coordinate headCoordinate = new Day9.Coordinate(4, 2);
 
-        assertThat(day9.moveTailCloserToHead(tailCoordinate, headCoordinate))
+        assertThat(tailCoordinate.follow(headCoordinate))
                 .isEqualTo(new Day9.Coordinate(4, 3));
     }
 
@@ -57,7 +70,7 @@ public class Day9Test {
         Day9.Coordinate tailCoordinate = new Day9.Coordinate(2, 4);
         Day9.Coordinate headCoordinate = new Day9.Coordinate(1, 4);
 
-        assertThat(day9.moveTailCloserToHead(tailCoordinate, headCoordinate))
+        assertThat(tailCoordinate.follow(headCoordinate))
                 .isEqualTo(new Day9.Coordinate(2, 4));
 
     }
@@ -66,7 +79,7 @@ public class Day9Test {
     public void canMoveNortheast() {
         var tailCoordinate = new Day9.Coordinate(3, 3);
         var headCoordinate = new Day9.Coordinate(4, 5);
-        assertThat(day9.moveTailCloserToHead(tailCoordinate, headCoordinate))
+        assertThat(tailCoordinate.follow(headCoordinate))
                 .isEqualTo(new Day9.Coordinate(4, 4));
     }
 
@@ -75,7 +88,7 @@ public class Day9Test {
         Day9.Coordinate tailCoordinate = new Day9.Coordinate(3, 3);
         Day9.Coordinate headCoordinate = new Day9.Coordinate(5, 4);
 
-        assertThat(day9.moveTailCloserToHead(tailCoordinate, headCoordinate))
+        assertThat(tailCoordinate.follow(headCoordinate))
                 .isEqualTo(new Day9.Coordinate(4, 4));
     }
 
@@ -84,7 +97,7 @@ public class Day9Test {
         Day9.Coordinate tailCoordinate = new Day9.Coordinate(3, 3);
         Day9.Coordinate headCoordinate = new Day9.Coordinate(2, 1);
 
-        assertThat(day9.moveTailCloserToHead(tailCoordinate, headCoordinate))
+        assertThat(tailCoordinate.follow(headCoordinate))
                 .isEqualTo(new Day9.Coordinate(2, 2));
     }
 
@@ -93,7 +106,7 @@ public class Day9Test {
         Day9.Coordinate tailCoordinate = new Day9.Coordinate(3, 3);
         Day9.Coordinate headCoordinate = new Day9.Coordinate(1, 2);
 
-        assertThat(day9.moveTailCloserToHead(tailCoordinate, headCoordinate))
+        assertThat(tailCoordinate.follow(headCoordinate))
                 .isEqualTo(new Day9.Coordinate(2, 2));
     }
 
@@ -102,7 +115,7 @@ public class Day9Test {
         var tailCoordinate = new Day9.Coordinate(4, 3);
         var headCoordinate = new Day9.Coordinate(2, 4);
 
-        assertThat(day9.moveTailCloserToHead(tailCoordinate, headCoordinate))
+        assertThat(tailCoordinate.follow(headCoordinate))
                 .isEqualTo(new Day9.Coordinate(3, 4));
     }
 }

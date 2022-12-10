@@ -2,8 +2,17 @@ import java.lang.reflect.Method;
 
 public class Main {
     public static void main(String[] args) throws Exception {
-        Day9 day9 = new Day9();
-        day9.run();
+        if (args.length == 0) {
+            for (int i = 1; i < 26; i++) {
+                try {
+                    printSolution(i);
+                } catch (Exception e) {
+                    if (!(e instanceof ClassNotFoundException)) {
+                        throw e;
+                    }
+                }
+            }
+        }
 
         if (args.length == 1) {
             printSolution(Integer.parseInt(args[0]));
